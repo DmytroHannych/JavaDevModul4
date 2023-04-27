@@ -11,6 +11,7 @@ public class DatabaseSelectService {
         databaseQueryService.findYoundestEldestWorkers();
         databaseQueryService.findLongestProgect();
         databaseQueryService.findProjectCost();
+        databaseQueryService.printList();
 
     }
 }

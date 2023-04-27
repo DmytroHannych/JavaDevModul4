@@ -30,7 +30,6 @@ public class DatabaseQueryService {
             String name = rs.getString(1);
             Integer projectCount = rs.getInt(2);
             maxProjectCountClients.add(new MaxProjectCountClient(name, projectCount));
-            System.out.println(maxProjectCountClients);
         }
         rs.close();
         statement.close();
@@ -48,8 +47,6 @@ public class DatabaseQueryService {
             String name = rs.getString(1);
             BigDecimal salary = rs.getBigDecimal(2);
             maxSalaryWorkers.add(new MaxSalaryWorker(name, salary));
-            System.out.println(maxSalaryWorkers);
-
         }
         rs.close();
         statement.close();
@@ -70,11 +67,11 @@ public class DatabaseQueryService {
             youngestEldestWorkers.add(new YoungestEldestWorker(name, birthday, type));
 
         }
-       System.out.println(youngestEldestWorkers);
         return youngestEldestWorkers;
     }
 
-   public void findLongestProgect() throws SQLException, IOException {
+   public  List<LongestProject> findLongestProgect() throws SQLException, IOException {
+        List<LongestProject> longestProjects = new ArrayList<>();
         Statement statement = database.getConnection().createStatement();
         String sql = String.join(
                 "\n",
@@ -83,30 +80,42 @@ public class DatabaseQueryService {
         if (rs.next()) {
             String id = rs.getString(1);
             Integer mounth = rs.getInt(2);
-            System.out.println("id " + id + ", mounth " + mounth);
+            longestProjects.add(new LongestProject(id,mounth));
 
         }else{
             System.out.println("Result not found");
         }
-        rs.close();
-        statement.close();
+       rs.close();
+       statement.close();
+        return longestProjects;
     }
 
 
-    public void findProjectCost() throws SQLException, IOException {
-        Statement statement = database.getConnection().createStatement();
+    public List<ProgectCost> findProjectCost() throws SQLException, IOException {
+        List<ProgectCost> progectCosts = new ArrayList<>();
+         Statement statement = database.getConnection().createStatement();
         String sql = String.join(
                 "\n",
                 Files.readAllLines(Paths.get(Print_Project_Price)));
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
-            String id = rs.getString(1);
+            Integer id = rs.getInt(1);
             BigDecimal cost = rs.getBigDecimal(2);
-            System.out.println("id " + id + ", mounth " + cost);
+            progectCosts.add(new ProgectCost(id,cost));
 
         }
         rs.close();
         statement.close();
+        return progectCosts;
     }
 
+
+    public void printList() throws SQLException, IOException {
+        System.out.println(findMaxProjectsClient());
+        System.out.println(findMaxSalaryWorker());
+        System.out.println(findLongestProgect());
+        System.out.println(findYoundestEldestWorkers());
+        System.out.println(findProjectCost());
+
+    }
 }
